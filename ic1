@@ -1,0 +1,109 @@
+  Procedure: g_
+  Intermediate Code Statements
+	iLoad:    	v0 <- 1
+	load:    	a0 <- x_
+	print
+	iLoad:    	v0 <- 1
+	load:    	a0 <- y_
+	print
+	iLoad:    	v0 <- 1
+	load:    	a0 <- r_
+	print
+	iLoad:    	v0 <- 1
+	load:    	a0 <- p_
+	print
+	load:    	v0 <- z_
+	move:    	v1 <- v0
+	return
+  Procedure: main
+  Intermediate Code Statements
+	iLoad:    	v0 <- 8
+	store:    	a_ <- v0
+	iLoad:    	v0 <- 3
+	store:    	p_ <- v0
+	iLoad:    	v0 <- 4
+	store:    	r_ <- v0
+	iLoad:    	v0 <- 9
+	store:    	y_ <- v0
+	load:    	v0 <- a_
+	store:    	x_ <- v0
+	call g_
+	move:    	v0 <- v1
+	store:    	b_ <- v0
+
+	.data
+m_:	.word 0
+
+	.text 			# The .text assembler directive indicates
+	.globl g_		# The following is the code (as oppose to data)
+g_:				# .globl makes main know to the 
+				# outside of the program.
+# Prologue begins 
+	sw $ra, 0($sp)		# Save the return address
+	sw $fp, -4($sp)		# Save the frame pointer
+	sub $fp, $sp, 8		# Update the frame pointer
+
+	sub $sp, $sp, 12		# Make space for the locals
+# Prologue ends
+
+	li $v0, 1
+	lw $a0, 12($fp)
+	syscall
+	li $v0, 1
+	lw $a0, 16($fp)
+	syscall
+	li $v0, 1
+	lw $a0, 20($fp)
+	syscall
+	li $v0, 1
+	lw $a0, 24($fp)
+	syscall
+	lw $v0, 0($fp)
+	move $v1, $v0
+	j epilogue_g_
+
+# Epilogue Begins
+epilogue_g_:
+	add $sp, $sp, 12
+	lw $fp, -4($sp)  
+	lw $ra, 0($sp)   
+	jr        $31		# Jump back to the called procedure
+# Epilogue Ends
+
+
+	.text 			# The .text assembler directive indicates
+	.globl main		# The following is the code (as oppose to data)
+main:				# .globl makes main know to the 
+				# outside of the program.
+# Prologue begins 
+	sw $ra, 0($sp)		# Save the return address
+	sw $fp, -4($sp)		# Save the frame pointer
+	sub $fp, $sp, 8		# Update the frame pointer
+
+	sub $sp, $sp, 16		# Make space for the locals
+# Prologue ends
+
+	li $v0, 8
+	sw $v0, 0($fp)
+	li $v0, 3
+	sw $v0, 0($sp)
+	li $v0, 4
+	sw $v0, -4($sp)
+	li $v0, 9
+	sw $v0, -8($sp)
+	lw $v0, 0($fp)
+	sw $v0, -12($sp)
+	sub $sp, $sp, 16
+	jal g_
+	add $sp, $sp, 16
+	move $v0, $v1
+	sw $v0, -4($fp)
+
+# Epilogue Begins
+epilogue_main:
+	add $sp, $sp, 16
+	lw $fp, -4($sp)  
+	lw $ra, 0($sp)   
+	jr        $31		# Jump back to the called procedure
+# Epilogue Ends
+
