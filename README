@@ -1,1 +1,3 @@
-
+• A compiler to generate MIPS 32 assembly code and an interpreter for a subset of C language.
+• Used lex and yacc for scanning, parsing source code and constructed components like Abstract Syntax Trees, Symbol
+Tables, Intermediate Code to generate assembly code.
